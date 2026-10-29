@@ -583,6 +583,47 @@ export type Database = {
           },
         ]
       }
+      clinical_note_addenda: {
+        Row: {
+          author_id: string
+          author_name: string | null
+          content: string
+          created_at: string
+          id: string
+          note_id: string
+          org_id: string
+          reason: string
+        }
+        Insert: {
+          author_id?: string
+          author_name?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          note_id: string
+          org_id: string
+          reason: string
+        }
+        Update: {
+          author_id?: string
+          author_name?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          note_id?: string
+          org_id?: string
+          reason?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_note_addenda_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clinical_notes: {
         Row: {
           appointment_id: string | null
@@ -594,6 +635,8 @@ export type Database = {
           org_id: string
           patient_id: string
           plan: string | null
+          signed_at: string | null
+          signed_by: string | null
           subjective: string | null
           updated_at: string
         }
@@ -607,6 +650,8 @@ export type Database = {
           org_id: string
           patient_id: string
           plan?: string | null
+          signed_at?: string | null
+          signed_by?: string | null
           subjective?: string | null
           updated_at?: string
         }
@@ -620,6 +665,8 @@ export type Database = {
           org_id?: string
           patient_id?: string
           plan?: string | null
+          signed_at?: string | null
+          signed_by?: string | null
           subjective?: string | null
           updated_at?: string
         }
