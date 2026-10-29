@@ -17,7 +17,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!session) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/app/login" replace />;
   }
 
   // Role-based access is now handled by OrgProvider + sidebar visibility

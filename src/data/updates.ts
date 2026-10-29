@@ -13,6 +13,16 @@ export interface UpdateEntry {
 
 export const updates: UpdateEntry[] = [
   {
+    version: "v2.17.1",
+    date: "October 29, 2026",
+    title: "Smoother sign-in",
+    kind: "fix",
+    items: [
+      { kind: "fix", text: "Signing in from a normal browser tab no longer sends you back to the login screen." },
+      { kind: "improvement", text: "Your clinics load faster after signing in." },
+    ],
+  },
+  {
     version: "v2.17.0",
     date: "October 29, 2026",
     title: "Safer, fuller prescriptions",

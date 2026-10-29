@@ -48,7 +48,7 @@ export default function Login() {
 
   useEffect(() => {
     if (!authLoading && session && !demoActive.current) {
-      navigate("/select-clinic", { replace: true });
+      navigate("/app/select-clinic", { replace: true });
     }
   }, [session, authLoading, navigate]);
 
@@ -77,10 +77,10 @@ export default function Login() {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      navigate("/select-clinic");
+      // Keep the button busy; the auth listener effect above navigates once
+      // the session and memberships have fully loaded.
     } catch (error: any) {
       toast({ title: "Login failed", description: error.message, variant: "destructive" });
-    } finally {
       setLoading(false);
     }
   };

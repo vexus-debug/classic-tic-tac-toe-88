@@ -14,11 +14,11 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
   }
 
   if (!session) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/app/login" replace />;
   }
 
   if (!roles.includes("super_admin")) {
-    return <Navigate to="/select-clinic" replace />;
+    return <Navigate to="/app/select-clinic" replace />;
   }
 
   return <>{children}</>;

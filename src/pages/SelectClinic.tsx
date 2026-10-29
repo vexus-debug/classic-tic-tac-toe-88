@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { createClinicForUser } from "@/lib/createClinic";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,8 +57,17 @@ export default function SelectClinic() {
   useEffect(() => {
     if (loading || creatingClinic) return;
     if (!user) {
-      navigate("/login", { replace: true });
-      return;
+      // The session may still be landing right after sign-in; confirm with
+      // the auth client before bouncing to the login screen.
+      let cancelled = false;
+      supabase.auth.getSession().then(({ data }) => {
+        if (cancelled) return;
+        if (data.session) refetchUserData();
+        else navigate("/app/login", { replace: true });
+      });
+      return () => {
+        cancelled = true;
+      };
     }
     // Super admin can also access /admin
     if (roles.includes("super_admin") && orgMemberships.length === 0) {
@@ -88,10 +98,10 @@ export default function SelectClinic() {
     if (lastSlug && orgMemberships.some((m) => m.org_slug === lastSlug)) {
       navigate(`/clinic/${lastSlug}/dashboard`, { replace: true });
     }
-  }, [loading, creatingClinic, user, orgMemberships, roles, navigate]);
+  }, [loading, creatingClinic, user, orgMemberships, roles, navigate, refetchUserData]);
 
 
-  if (loading || creatingClinic) {
+  if (loading || creatingClinic || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
@@ -114,7 +124,7 @@ export default function SelectClinic() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="outline" onClick={() => { signOut(); navigate("/login"); }}>
+            <Button variant="outline" onClick={() => { signOut(); navigate("/app/login"); }}>
               <LogOut className="mr-2 h-4 w-4" /> Sign Out
             </Button>
           </CardContent>
@@ -168,7 +178,7 @@ export default function SelectClinic() {
               <Shield className="mr-2 h-4 w-4" /> Admin Panel
             </Button>
           )}
-          <Button variant="ghost" size="sm" onClick={() => { signOut(); navigate("/login"); }} className="text-muted-foreground">
+          <Button variant="ghost" size="sm" onClick={() => { signOut(); navigate("/app/login"); }} className="text-muted-foreground">
             <LogOut className="mr-2 h-4 w-4" /> Sign Out
           </Button>
         </div>

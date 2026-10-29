@@ -50,31 +50,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchUserData = async (userId: string) => {
     try {
-      // Fetch profile
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("full_name, phone, avatar_url")
-        .eq("id", userId)
-        .maybeSingle();
+      // Fetch profile, platform roles and org memberships in parallel
+      const [{ data: profileData }, { data: rolesData }, { data: memberships }] = await Promise.all([
+        supabase.from("profiles").select("full_name, phone, avatar_url").eq("id", userId).maybeSingle(),
+        supabase.from("user_roles").select("role").eq("user_id", userId),
+        supabase
+          .from("org_members")
+          .select("org_id, role, organizations(name, slug, clinic_type, parent_org_id)")
+          .eq("user_id", userId),
+      ]);
 
-      if (profileData) {
-        setProfile(profileData);
-      }
-
-      // Fetch platform roles
-      const { data: rolesData } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userId);
-
+      if (profileData) setProfile(profileData);
       setRoles((rolesData || []).map((r) => r.role));
-
-      // Fetch org memberships
-      const { data: memberships } = await supabase
-        .from("org_members")
-        .select("org_id, role, organizations(name, slug, clinic_type, parent_org_id)")
-        .eq("user_id", userId);
-
       setOrgMemberships(
         (memberships || []).map((m: any) => ({
           org_id: m.org_id,
