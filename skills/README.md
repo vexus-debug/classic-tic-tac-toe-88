@@ -5,7 +5,7 @@ Any AI assistant working on Clinexus MUST use these skills. Before a matching ta
 
 | Skill | Use it when the task involves |
 |---|---|
-| `web-design-engineer/` | Any UI, layout, styling, page, component, visual or redesign work (also mirrored in `docs/design-skill/`) |
+| `web-design-engineer/` | Any UI, layout, styling, page, component, visual or redesign work (always use this copy, not `docs/design-skill/`) |
 | `beautiful-article/` | Blog posts, articles, long-form content pages, tutorials |
 | `gpt-image-2/` | Generating or prompting images, illustrations, social/marketing visuals |
 | `motion-showreel/` | Animations, motion design, product showreels |
